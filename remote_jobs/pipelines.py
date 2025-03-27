@@ -48,8 +48,10 @@ class PostgresPipeline:
                 (item["title"], item["company"], item["location"], item["link"], item["employment_type"], item["salary"])
             )
             self.connection.commit()
+            # comment this out for testing
             spider.logger.info(f"Successfully saved: {item['title']} at {item['company']}")
         except psycopg2.Error as e:
+            # comment this out for testing
             spider.logger.error(f"Database Error: {e} | Item: {item}")
             return item  # Continue processing next item
 
