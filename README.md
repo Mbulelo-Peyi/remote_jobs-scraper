@@ -2,11 +2,11 @@
 A web scraper for collecting remote job listings from We Work Remotely using Scrapy and storing the data in PostgreSQL. The scraper supports automated exports to CSV.  
 
 ## Features  
-✅ Scrapes job listings from We Work Remotely  
-✅ Stores data in PostgreSQL  
-✅ Exports job listings to CSV  
-✅ Supports Bright Data proxies (optional)  
-✅ Automated cron job scheduling  
+Scrapes job listings from We Work Remotely  
+Stores data in PostgreSQL  
+Exports job listings to CSV  
+Supports Bright Data proxies (optional)  
+Automated cron job scheduling  
 
 ## 1. Installation & Setup  
 ### Prerequisites  
@@ -61,7 +61,7 @@ Run: `python export_to_csv.py` (creates exported_jobs.csv)
 Run: `pytest tests/` or `pytest -v` for verbose output  
 
 ## 7. CI/CD  
-Coming soon! 🚀  
+Coming soon! 
 
 ## 8. Contributing  
 Report issues via GitHub Issues. Fork and improve the project!  
