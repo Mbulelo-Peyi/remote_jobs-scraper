@@ -1,5 +1,3 @@
----
-
 # Remote Jobs Scraper
 
 A web scraping pipeline built with **Scrapy** to extract remote programming job listings from **We Work Remotely**. Data is dynamically scraped, routed through a custom pipeline into a **PostgreSQL** database with built-in deduplication, and can be exported cleanly to a CSV file via a utility **Pandas** script.
