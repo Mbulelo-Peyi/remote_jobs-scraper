@@ -2,7 +2,7 @@
 
 A web scraping pipeline built with **Scrapy** to extract remote programming job listings from **We Work Remotely**. Data is dynamically scraped, routed through a custom pipeline into a **PostgreSQL** database with built-in deduplication, and can be exported cleanly to a CSV file via a utility **Pandas** script.
 
-## 🚀 Key Features
+## Key Features
 
 * **Targeted Extraction:** Built specifically to parse the *Remote Programming Jobs* category on We Work Remotely.
 * **Granular Data Points:** Captures job title, company, headquarters location, source link, employment type (Full-Time/Part-Time), and salary strings.
@@ -14,7 +14,7 @@ A web scraping pipeline built with **Scrapy** to extract remote programming job 
 
 ---
 
-## ⚙️ 1. Installation & Setup
+## 1. Installation & Setup
 
 ### Prerequisites
 
@@ -67,7 +67,7 @@ playwright install chromium
 
 ---
 
-## 🗄️ 2. Environment Configuration
+## 2. Environment Configuration
 
 ### Step 1: Create the Database Shell
 
@@ -78,7 +78,7 @@ CREATE DATABASE scraper_db;
 
 ```
 
-> 💡 **Note:** You do not need to create tables or columns manually. The pipeline script generates them automatically when you launch the spider.
+>  **Note:** You do not need to create tables or columns manually. The pipeline script generates them automatically when you launch the spider.
 
 ### Step 2: Configure Environment Variables
 
@@ -95,7 +95,7 @@ DB_PORT=5432
 
 ---
 
-## 💻 3. Usage & Execution
+## 3. Usage & Execution
 
 ### Running the Scraper
 
@@ -124,7 +124,7 @@ python export_to_csv.py
 
 ---
 
-## 📊 Data Schema Definition
+## Data Schema Definition
 
 The database pipeline will automatically spin up a table named `jobs` with the following configuration:
 
@@ -140,7 +140,7 @@ The database pipeline will automatically spin up a table named `jobs` with the f
 
 ---
 
-## 🧪 4. Testing Suite
+## 4. Testing Suite
 
 Run your `pytest` suite to verify extraction selectors, pipeline logic, and database commits:
 
@@ -155,7 +155,7 @@ pytest -v
 
 ---
 
-## 🤝 5. Contributing
+## 5. Contributing
 
 1. Fork the Project.
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`).
@@ -165,6 +165,6 @@ pytest -v
 
 ---
 
-## 📄 6. License
+## 6. License
 
 Distributed under the MIT License. See `LICENSE` for details.
