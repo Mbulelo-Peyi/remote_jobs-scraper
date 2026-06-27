@@ -1,70 +1,172 @@
-# Remote Jobs Scraper  
-A web scraper for collecting remote job listings from We Work Remotely using Scrapy and storing the data in PostgreSQL. The scraper supports automated exports to CSV.  
+---
 
-## Features  
-Scrapes job listings from We Work Remotely  
-Stores data in PostgreSQL  
-Exports job listings to CSV  
-Supports Bright Data proxies (optional)  
-Automated cron job scheduling  
+# Remote Jobs Scraper
 
-## 1. Installation & Setup  
-### Prerequisites  
-- Python 3.8+  
-- PostgreSQL (with pgAdmin for management)  
-- pip (Python package manager)  
+A web scraping pipeline built with **Scrapy** to extract remote programming job listings from **We Work Remotely**. Data is dynamically scraped, routed through a custom pipeline into a **PostgreSQL** database with built-in deduplication, and can be exported cleanly to a CSV file via a utility **Pandas** script.
 
-### Steps  
-1. Clone the Repository:  
-`git clone https://github.com/Mbulelo-Peyi/remote_jobs-scraper.git` then `cd remote_jobs-scraper`  
+## 🚀 Key Features
 
-2. Create and activate Virtual Environment:  
-`python -m venv venv` then `source venv/bin/activate` (macOS/Linux) or `venv\Scripts\activate` (Windows)  
+* **Targeted Extraction:** Built specifically to parse the *Remote Programming Jobs* category on We Work Remotely.
+* **Granular Data Points:** Captures job title, company, headquarters location, source link, employment type (Full-Time/Part-Time), and salary strings.
+* **Automated Table Initialization:** The database pipeline uses `CREATE TABLE IF NOT EXISTS` to automatically spin up your schema on its first run.
+* **Safe Ingestion & Deduplication:** Uses PostgreSQL `ON CONFLICT (link) DO NOTHING` constraints to prevent database duplication on repeated runs.
+* **Secure Configurations:** Uses `python-dotenv` to safeguard database credentials.
+* **Pandas Data Export:** Includes a dedicated standalone script to pull database rows into a structured Pandas DataFrame and output a clean CSV.
+* **Test-Driven:** Fully integrated with `pytest` for validation.
 
-3. Install Dependencies:  
-`pip install -r requirements.txt`  
+---
 
-## 2. Database Setup  
-### Steps  
-1. Create PostgreSQL Database:  
-Run `CREATE DATABASE scraper_db;` in your PostgreSQL client  
+## ⚙️ 1. Installation & Setup
 
-2. Create Jobs Table:  
-Run: `CREATE TABLE jobs (id SERIAL PRIMARY KEY, title TEXT NOT NULL, company TEXT NOT NULL, location TEXT, link TEXT UNIQUE);`  
+### Prerequisites
 
-3. Update credentials in pipelines.py with your database details  
+* **Python 3.8+**
+* **PostgreSQL** instance running locally or remotely
 
-## 3. Running the Scraper  
-### Steps  
-1. Start Scraping:  
-`scrapy crawl weworkremotely` or if error `python -m scrapy crawl weworkremotely`  
+### Setup Steps
 
-2. Verify Data:  
-Check PostgreSQL with: `SELECT * FROM jobs;`  
+1. **Clone the Repository:**
+```bash
+git clone https://github.com/Mbulelo-Peyi/remote_jobs-scraper.git
+cd remote_jobs-scraper
 
-## 4. Export Data to CSV  
-Run: `python export_to_csv.py` (creates exported_jobs.csv)  
+```
 
-## 5. Automate with Cron Jobs  
-### Linux/macOS  
-1. Edit crontab: `crontab -e`  
-2. Add:  
-`0 2 * * * cd /path/to/project && scrapy crawl weworkremotely >> logs.txt 2>&1`  
-`30 2 * * * cd /path/to/project && python export_to_csv.py`  
 
-### Windows  
-1. Create Task Scheduler task  
-2. Set daily at 2 AM  
-3. Action: Run cmd.exe with: `/c cd C:\path\to\project && scrapy crawl weworkremotely`  
+2. **Set Up a Virtual Environment:**
+* **macOS/Linux:**
+```bash
+python -m venv venv && source venv/bin/activate
 
-## 6. Running Tests  
-Run: `pytest tests/` or `pytest -v` for verbose output  
+```
 
-## 7. CI/CD  
-Coming soon! 
 
-## 8. Contributing  
-Report issues via GitHub Issues. Fork and improve the project!  
+* **Windows:**
+```bash
+python -m venv venv && .\venv\Scripts\activate
 
-## 9. License  
-MIT License
+```
+
+
+
+
+3. **Install Dependencies:**
+```bash
+pip install -r requirements.txt
+
+```
+
+
+*(Ensure your `requirements.txt` contains `scrapy`, `scrapy-playwright`, `psycopg2` or `psycopg2-binary`, `pandas`, `python-dotenv`, and `pytest`)*
+4. **Install Playwright Browsers:**
+Initialize the underlying headless Chromium binary configured in your settings:
+```bash
+playwright install chromium
+
+```
+
+
+
+---
+
+## 🗄️ 2. Environment Configuration
+
+### Step 1: Create the Database Shell
+
+Log into your PostgreSQL client (pgAdmin, psql, etc.) and create an empty database:
+
+```sql
+CREATE DATABASE scraper_db;
+
+```
+
+> 💡 **Note:** You do not need to create tables or columns manually. The pipeline script generates them automatically when you launch the spider.
+
+### Step 2: Configure Environment Variables
+
+Create a file named `.env` in the root directory of your project and populate it with your database connection parameters:
+
+```text
+DB_NAME=scraper_db
+DB_USER=your_postgres_username
+DB_PASSWORD=your_postgres_password
+DB_HOST=127.0.0.1
+DB_PORT=5432
+
+```
+
+---
+
+## 💻 3. Usage & Execution
+
+### Running the Scraper
+
+Execute the spider to crawl listings and populate your database:
+
+```bash
+scrapy crawl weworkremotely
+
+```
+
+*Alternative module invocation syntax:*
+
+```bash
+python -m scrapy crawl weworkremotely
+
+```
+
+### Exporting Data to CSV
+
+Run the standalone script to dump all scraped jobs from the database into a `exported_jobs.csv` file using Pandas:
+
+```bash
+python export_to_csv.py
+
+```
+
+---
+
+## 📊 Data Schema Definition
+
+The database pipeline will automatically spin up a table named `jobs` with the following configuration:
+
+| Column Name | Data Type | Constraints / Defaults |
+| --- | --- | --- |
+| `id` | `SERIAL` | `PRIMARY KEY` |
+| `title` | `TEXT` | `NOT NULL` |
+| `company` | `TEXT` | `NOT NULL` |
+| `location` | `TEXT` | `NOT NULL` |
+| `link` | `TEXT` | `UNIQUE NOT NULL` |
+| `employment_type` | `TEXT` | `DEFAULT 'Unknown'` |
+| `salary` | `TEXT` | `DEFAULT 'Not Specified'` |
+
+---
+
+## 🧪 4. Testing Suite
+
+Run your `pytest` suite to verify extraction selectors, pipeline logic, and database commits:
+
+```bash
+# General test run
+pytest
+
+# Verbose testing mode
+pytest -v
+
+```
+
+---
+
+## 🤝 5. Contributing
+
+1. Fork the Project.
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`).
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
+4. Push to the Branch (`git push origin feature/AmazingFeature`).
+5. Open a Pull Request.
+
+---
+
+## 📄 6. License
+
+Distributed under the MIT License. See `LICENSE` for details.
